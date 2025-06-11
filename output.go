@@ -84,7 +84,7 @@ func printVerbose(format string, args ...interface{}) {
 func printBanner() {
 	banner := `
    ╔═══════════════════════════════════════╗
-   ║           ` + color(ColorBoldCyan) + `NETENUM v1.0` + color(ColorReset) + `              ║
+   ║           ` + color(ColorBoldCyan) + `REDHOUND v1.0` + color(ColorReset) + `             ║
    ║    ` + color(ColorGray) + `Network Enumeration Tool` + color(ColorReset) + `          ║
    ╚═══════════════════════════════════════╝
 `

@@ -1,4 +1,4 @@
-// netenum - A minimal concurrent internal network enumerator in Go with SOCKS4 proxy support.
+// redhound - A minimal concurrent internal network enumerator in Go with SOCKS4 proxy support.
 // -----------------------------------------------------------------------------
 // ⚠️  USE ONLY AGAINST NETWORKS YOU HAVE EXPLICIT PERMISSION TO TEST.
 // -----------------------------------------------------------------------------
@@ -6,17 +6,17 @@
 //   - Go ≥1.20
 //   - No external dependencies (pure Go implementation)
 //
-// Build:   go build -o netenum .
+// Build:   go build -o redhound .
 // Examples:
 //
 //	# Direct scan of a /24
-//	./netenum -cidr 192.168.1.0/24 -o results.json -rate 64
+//	./redhound -cidr 192.168.1.0/24 -o results.json -rate 64
 //
 //	# Route all traffic through SOCKS4 proxy
-//	./netenum -cidr 10.0.0.0/24 -proxy socks4://127.0.0.1:1080
+//	./redhound -cidr 10.0.0.0/24 -proxy socks4://127.0.0.1:1080
 //
 //	# SOCKS5 proxy (also supported)
-//	./netenum -cidr 10.0.0.0/24 -proxy socks5://127.0.0.1:9050
+//	./redhound -cidr 10.0.0.0/24 -proxy socks5://127.0.0.1:9050
 //
 // -----------------------------------------------------------------------------
 // Features:

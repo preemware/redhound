@@ -1,4 +1,4 @@
-module netenum
+module redhound
 
 go 1.24.4
 

@@ -22,7 +22,7 @@ func handleHTTPService(conn net.Conn, service *Service, ip string, port uint16) 
 	service.Name = "http"
 
 	// Send HTTP request
-	httpRequest := fmt.Sprintf("GET / HTTP/1.1\r\nHost: %s:%d\r\nUser-Agent: netenum/1.0\r\nConnection: close\r\n\r\n", ip, port)
+	httpRequest := fmt.Sprintf("GET / HTTP/1.1\r\nHost: %s:%d\r\nUser-Agent: redhound/1.0\r\nConnection: close\r\n\r\n", ip, port)
 
 	_, err := conn.Write([]byte(httpRequest))
 	if err != nil {
