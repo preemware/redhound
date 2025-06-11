@@ -88,24 +88,3 @@ func saveJSON(path string, data any) error {
 	enc.SetIndent("", "  ")
 	return enc.Encode(data)
 }
-
-// formatPortList creates a readable string of open ports with protocols
-func formatPortList(services []Service) string {
-	if len(services) == 0 {
-		return "no open ports"
-	}
-
-	var ports []string
-	for _, service := range services {
-		portStr := fmt.Sprintf("%d/%s", service.Port, service.Protocol)
-		if service.Name != "" && service.Name != "unknown" {
-			portStr += fmt.Sprintf(" (%s)", service.Name)
-		}
-		ports = append(ports, portStr)
-	}
-
-	if len(services) == 1 {
-		return fmt.Sprintf("1 port open: %s", ports[0])
-	}
-	return fmt.Sprintf("%d ports open: %s", len(services), strings.Join(ports, ", "))
-}

@@ -115,5 +115,10 @@ func scanPort(dialer proxy.Dialer, ip string, port uint16, timeout time.Duration
 		service.Name = detectServiceByPort(service.Port)
 	}
 
+	// Perform SMB fingerprinting for SMB ports
+	if service.Port == 445 || service.Port == 139 {
+		enhanceSMBService(dialer, service, ip, timeout)
+	}
+
 	return service
 }

@@ -31,7 +31,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"sync"
 	"time"
@@ -44,10 +43,18 @@ func main() {
 	timeout := flag.Duration("timeout", 5*time.Second, "Per‑port connection timeout")
 	proxy := flag.String("proxy", "", "Proxy URL (socks4|socks5), e.g. socks4://127.0.0.1:1080")
 	portRange := flag.String("ports", "", "Port range to scan (default: common ports), e.g. 1-1000 or 80,443,8080")
+	noColor := flag.Bool("no-color", false, "Disable colored output")
+	verbose := flag.Bool("v", false, "Enable verbose output")
 	flag.Parse()
 
+	// Initialize output settings
+	initOutput(*noColor, *verbose)
+
+	// Print banner
+	printBanner()
+
 	if *cidr == "" {
-		fmt.Fprintln(os.Stderr, "[!] you must specify -cidr")
+		printError("you must specify -cidr")
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -58,7 +65,7 @@ func main() {
 		var err error
 		ports, err = parsePorts(*portRange)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[!] Invalid port range: %v\n", err)
+			printError("Invalid port range: %v", err)
 			os.Exit(1)
 		}
 	}
@@ -66,22 +73,26 @@ func main() {
 	// Adjust defaults for proxy usage
 	if *proxy != "" {
 		if *rate > 10 {
-			fmt.Fprintf(os.Stderr, "[!] Reducing rate from %d to 10 for proxy scan\n", *rate)
+			printWarning("Reducing rate from %d to 10 for proxy scan", *rate)
 			*rate = 10
 		}
 		if *timeout < 10*time.Second {
-			fmt.Fprintf(os.Stderr, "[!] Increasing timeout from %v to 10s for proxy scan\n", *timeout)
+			printWarning("Increasing timeout from %v to 10s for proxy scan", *timeout)
 			*timeout = 10 * time.Second
 		}
-		fmt.Fprintf(os.Stderr, "[*] Using proxy: %s\n", *proxy)
 	}
 
 	ips, err := cidrHosts(*cidr)
 	if err != nil {
-		panic(err)
+		printError("Failed to parse CIDR: %v", err)
+		os.Exit(1)
 	}
 
-	fmt.Printf("[*] Scanning %d hosts on %d ports\n", len(ips), len(ports))
+	// Track scan start time
+	startTime := time.Now()
+
+	// Print scan summary
+	printScanSummary(*cidr, len(ips), len(ports), *proxy, *rate, *timeout)
 
 	sem := make(chan struct{}, *rate)
 	var wg sync.WaitGroup
@@ -97,14 +108,13 @@ func main() {
 			host, err := scanHost(ip, ports, *timeout, *proxy)
 			<-sem
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "[!] %s: %v\n", ip, err)
+				printVerbose("Error scanning %s: %v", ip, err)
 				return
 			}
 			if len(host.Services) > 0 {
-				portList := formatPortList(host.Services)
-				fmt.Printf("[+] %s: %s\n", ip, portList)
 				mux.Lock()
 				results = append(results, host)
+				printHostDiscovery(host)
 				mux.Unlock()
 			}
 		}()
@@ -113,8 +123,10 @@ func main() {
 	wg.Wait()
 
 	if err := saveJSON(*out, results); err != nil {
-		panic(err)
+		printError("Failed to save results: %v", err)
+		os.Exit(1)
 	}
 
-	fmt.Printf("\n✔ Scan complete. %d hosts with services found. Results written to %s\n", len(results), *out)
+	// Print final summary
+	printScanComplete(results, *out, startTime)
 }
