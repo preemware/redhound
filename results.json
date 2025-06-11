@@ -1,0 +1,452 @@
+[
+  {
+    "ip": "172.16.1.1",
+    "services": [
+      {
+        "port": 443,
+        "protocol": "tcp",
+        "name": "https",
+        "state": "open",
+        "banner": "SSL/TLS encrypted"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "nginx",
+        "state": "open",
+        "banner": "HTTP/1.1 301 Moved Permanently | Server: nginx",
+        "title": "301 Moved Permanently"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.5",
+    "services": [
+      {
+        "port": 21,
+        "protocol": "tcp",
+        "name": "ftp",
+        "state": "open",
+        "banner": "220 Dante Staff Drop Box"
+      },
+      {
+        "port": 111,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 135,
+        "protocol": "tcp",
+        "name": "msrpc",
+        "state": "open"
+      },
+      {
+        "port": 5985,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 2049,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 1433,
+        "protocol": "tcp",
+        "name": "mssql",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.100",
+    "services": [
+      {
+        "port": 21,
+        "protocol": "tcp",
+        "name": "ftp",
+        "product": "vsftpd",
+        "state": "open",
+        "banner": "220 (vsFTPd 3.0.3)"
+      },
+      {
+        "port": 22,
+        "protocol": "tcp",
+        "name": "ssh",
+        "product": "OpenSSH",
+        "state": "open",
+        "banner": "SSH-2.0-OpenSSH_8.2p1 Ubuntu-4"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache",
+        "version": "2.4.41",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Apache/2.4.41 (Ubuntu)",
+        "title": "Apache2 Ubuntu Default Page: It works"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.101",
+    "services": [
+      {
+        "port": 21,
+        "protocol": "tcp",
+        "name": "ftp",
+        "state": "open",
+        "banner": "220-FileZilla Server 0.9.60 beta\r\n220 DANTE-FTP"
+      },
+      {
+        "port": 5985,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 135,
+        "protocol": "tcp",
+        "name": "msrpc",
+        "state": "open"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.102",
+    "services": [
+      {
+        "port": 443,
+        "protocol": "tcp",
+        "name": "https",
+        "state": "open",
+        "banner": "SSL/TLS encrypted"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache + PHP",
+        "version": "2.4.54",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Apache/2.4.54 (Win64) OpenSSL/1.1.1p PHP/7.4.0",
+        "title": "Dante Marriage Registration System :: Home Page"
+      },
+      {
+        "port": 3306,
+        "protocol": "tcp",
+        "name": "mysql",
+        "state": "open",
+        "banner": "E\u0000\u0000\u0000\ufffdj\u0004Host '172.16.1.100' is not allowed to connect to this MySQL server"
+      },
+      {
+        "port": 5985,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 135,
+        "protocol": "tcp",
+        "name": "msrpc",
+        "state": "open"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 3389,
+        "protocol": "tcp",
+        "name": "rdp",
+        "state": "open"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.10",
+    "services": [
+      {
+        "port": 22,
+        "protocol": "tcp",
+        "name": "ssh",
+        "product": "OpenSSH",
+        "state": "open",
+        "banner": "SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache",
+        "version": "2.4.41",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Apache/2.4.41 (Ubuntu)",
+        "title": "Dante Hosting"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.12",
+    "services": [
+      {
+        "port": 22,
+        "protocol": "tcp",
+        "name": "ssh",
+        "product": "OpenSSH",
+        "state": "open",
+        "banner": "SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.3"
+      },
+      {
+        "port": 443,
+        "protocol": "tcp",
+        "name": "https",
+        "state": "open",
+        "banner": "SSL/TLS encrypted"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache + PHP",
+        "version": "2.4.43",
+        "state": "open",
+        "banner": "HTTP/1.1 302 Found | Server: Apache/2.4.43 (Unix) OpenSSL/1.1.1g PHP/7.4.7 mod_perl/2.0.11 Perl/v5.30.3"
+      },
+      {
+        "port": 3306,
+        "protocol": "tcp",
+        "name": "mysql",
+        "state": "open",
+        "banner": "G\u0000\u0000\u0001\ufffdj\u0004Host '172.16.1.100' is not allowed to connect to this MariaDB server"
+      },
+      {
+        "port": 21,
+        "protocol": "tcp",
+        "name": "ftp",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.17",
+    "services": [
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache",
+        "version": "2.4.41",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Apache/2.4.41 (Ubuntu)",
+        "title": "Index of /"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.20",
+    "services": [
+      {
+        "port": 22,
+        "protocol": "tcp",
+        "name": "ssh",
+        "product": "OpenSSH",
+        "state": "open",
+        "banner": "SSH-2.0-OpenSSH_for_Windows_8.1"
+      },
+      {
+        "port": 443,
+        "protocol": "tcp",
+        "name": "https",
+        "state": "open",
+        "banner": "SSL/TLS encrypted"
+      },
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Microsoft IIS + ASP.NET",
+        "version": "8.5",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Microsoft-IIS/8.5"
+      },
+      {
+        "port": 139,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 135,
+        "protocol": "tcp",
+        "name": "msrpc",
+        "state": "open"
+      },
+      {
+        "port": 3268,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 3389,
+        "protocol": "tcp",
+        "name": "rdp",
+        "state": "open"
+      },
+      {
+        "port": 636,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 53,
+        "protocol": "tcp",
+        "name": "dns",
+        "state": "open"
+      },
+      {
+        "port": 5985,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 88,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      },
+      {
+        "port": 389,
+        "protocol": "tcp",
+        "name": "ldap",
+        "state": "open"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 464,
+        "protocol": "tcp",
+        "name": "unknown",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.19",
+    "services": [
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache",
+        "version": "2.4.41",
+        "state": "open",
+        "banner": "HTTP/1.1 200 OK | Server: Apache/2.4.41 (Ubuntu)",
+        "title": "Index of /"
+      },
+      {
+        "port": 8080,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Jetty",
+        "state": "open",
+        "banner": "HTTP/1.1 403 Forbidden | Server: Jetty(9.4.27.v20200227)"
+      }
+    ]
+  },
+  {
+    "ip": "172.16.1.13",
+    "services": [
+      {
+        "port": 80,
+        "protocol": "tcp",
+        "name": "http",
+        "product": "Apache + PHP",
+        "version": "2.4.43",
+        "state": "open",
+        "banner": "HTTP/1.1 302 Found | Server: Apache/2.4.43 (Win64) OpenSSL/1.1.1g PHP/7.4.7"
+      },
+      {
+        "port": 445,
+        "protocol": "tcp",
+        "name": "smb",
+        "state": "open"
+      },
+      {
+        "port": 443,
+        "protocol": "tcp",
+        "name": "https",
+        "state": "open",
+        "banner": "SSL/TLS encrypted"
+      }
+    ]
+  }
+]
