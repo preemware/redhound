@@ -83,10 +83,13 @@ func printVerbose(format string, args ...interface{}) {
 // Banner and header functions
 func printBanner() {
 	banner := `
-   ╔═══════════════════════════════════════╗
-   ║           ` + color(ColorBoldCyan) + `REDHOUND v1.0` + color(ColorReset) + `             ║
-   ║    ` + color(ColorGray) + `Network Enumeration Tool` + color(ColorReset) + `          ║
-   ╚═══════════════════════════════════════╝
+    ██████╗ ███████╗██████╗ ██╗  ██╗ ██████╗ ██╗   ██╗███╗   ██╗██████╗ 
+    ██╔══██╗██╔════╝██╔══██╗██║  ██║██╔═══██╗██║   ██║████╗  ██║██╔══██╗
+    ██████╔╝█████╗  ██║  ██║███████║██║   ██║██║   ██║██╔██╗ ██║██║  ██║
+    ██╔══██╗██╔══╝  ██║  ██║██╔══██║██║   ██║██║   ██║██║╚██╗██║██║  ██║
+    ██║  ██║███████╗██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝
+    ╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
+    ` + color(ColorGray) + `Network Enumeration Tool` + color(ColorReset) + `
 `
 	fmt.Print(banner)
 }
@@ -110,9 +113,6 @@ func printScanSummary(cidr string, hostCount, portCount int, proxy string, rate 
 
 	fmt.Println()
 	printInfo("Starting scan...")
-	fmt.Printf("  %s┌─────────────────────────────────────────────────────┐%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("  %s│ %-51s │%s\n", color(ColorGray), "Host discoveries will appear below:", color(ColorReset))
-	fmt.Printf("  %s└─────────────────────────────────────────────────────┘%s\n", color(ColorGray), color(ColorReset))
 	fmt.Println()
 }
 
@@ -223,6 +223,11 @@ func printHostDiscovery(host Host) {
 			printSMBDetails(service.SMB, isLast)
 		}
 
+		// Display LDAP-specific information
+		if service.LDAP != nil {
+			printLDAPDetails(service.LDAP, isLast)
+		}
+
 		fmt.Println()
 	}
 	fmt.Println()
@@ -233,6 +238,12 @@ func printSMBDetails(smb *SMBInfo, isLast bool) {
 	prefix := "│  "
 	if isLast {
 		prefix = "   "
+	}
+
+	// MS17-010 (EternalBlue) gets top priority and special formatting
+	if smb.MS17_010 {
+		fmt.Printf("\n%s%s├─ %sMS17-010 (EternalBlue): VULNERABLE%s",
+			color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
 	}
 
 	if smb.Domain != "" {
@@ -250,8 +261,51 @@ func printSMBDetails(smb *SMBInfo, isLast bool) {
 	if smb.NullSession {
 		fmt.Printf("\n%s%s├─ %sNull Session: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
 	}
+	if smb.AnonymousAccess {
+		fmt.Printf("\n%s%s├─ %sAnonymous Access: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+
 	if len(smb.Shares) > 0 {
 		fmt.Printf("\n%s%s└─ Accessible Shares: %s%s%s", color(ColorGray), prefix, color(ColorYellow), strings.Join(smb.Shares, ", "), color(ColorReset))
+	}
+}
+
+// printLDAPDetails displays detailed LDAP information
+func printLDAPDetails(ldap *LDAPInfo, isLast bool) {
+	prefix := "│  "
+	if isLast {
+		prefix = "   "
+	}
+
+	if ldap.Domain != "" {
+		fmt.Printf("\n%s%s├─ Domain: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.Domain, color(ColorReset))
+	}
+	if ldap.BaseDN != "" {
+		fmt.Printf("\n%s%s├─ Base DN: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.BaseDN, color(ColorReset))
+	}
+	if ldap.ServerName != "" {
+		fmt.Printf("\n%s%s├─ Server: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.ServerName, color(ColorReset))
+	}
+	if ldap.NamingContext != "" {
+		fmt.Printf("\n%s%s├─ Naming Context: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.NamingContext, color(ColorReset))
+	}
+	if ldap.AnonymousBind {
+		fmt.Printf("\n%s%s├─ %sAnonymous Bind: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Users) > 0 && ldap.Users[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Users Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Users), color(ColorReset))
+	} else if len(ldap.Users) > 0 {
+		fmt.Printf("\n%s%s├─ %sUser Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Groups) > 0 && ldap.Groups[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Groups Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Groups), color(ColorReset))
+	} else if len(ldap.Groups) > 0 {
+		fmt.Printf("\n%s%s├─ %sGroup Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Computers) > 0 && ldap.Computers[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Computers Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Computers), color(ColorReset))
+	} else if len(ldap.Computers) > 0 {
+		fmt.Printf("\n%s%s├─ %sComputer Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
 	}
 }
 
@@ -265,6 +319,8 @@ func getPortColor(serviceName string) string {
 	case "ftp":
 		return ColorBoldYellow
 	case "smb":
+		return ColorBoldPurple
+	case "ldap", "ldaps":
 		return ColorBoldPurple
 	case "dns":
 		return ColorBoldCyan
@@ -280,10 +336,6 @@ func getPortColor(serviceName string) string {
 // Final scan results summary
 func printScanComplete(results []Host, outputFile string, startTime time.Time) {
 	duration := time.Since(startTime)
-
-	fmt.Printf("%s┌─────────────────────────────────────────────────────┐%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("%s│                 SCAN COMPLETE                       │%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("%s└─────────────────────────────────────────────────────┘%s\n", color(ColorGray), color(ColorReset))
 	fmt.Println()
 
 	// Summary statistics
@@ -303,34 +355,6 @@ func printScanComplete(results []Host, outputFile string, startTime time.Time) {
 	fmt.Printf("  └─ Hosts Found:     %s%d%s with open ports\n", color(ColorBoldGreen), totalHosts, color(ColorReset))
 	fmt.Printf("  └─ Total Services:  %s%d%s services discovered\n", color(ColorCyan), totalServices, color(ColorReset))
 	fmt.Printf("  └─ Output File:     %s%s%s\n", color(ColorYellow), outputFile, color(ColorReset))
-
-	if len(serviceTypes) > 0 {
-		fmt.Println()
-		printInfo("Service Breakdown:")
-
-		// Sort service types by count
-		type serviceCount struct {
-			name  string
-			count int
-		}
-		var services []serviceCount
-		for name, count := range serviceTypes {
-			services = append(services, serviceCount{name, count})
-		}
-		sort.Slice(services, func(i, j int) bool {
-			return services[i].count > services[j].count
-		})
-
-		for i, service := range services {
-			connector := "├─"
-			if i == len(services)-1 {
-				connector = "└─"
-			}
-			portColor := getPortColor(service.name)
-			fmt.Printf("  %s %s%s%s: %s%d%s instances\n",
-				connector, color(portColor), service.name, color(ColorReset), color(ColorCyan), service.count, color(ColorReset))
-		}
-	}
 
 	fmt.Println()
 }

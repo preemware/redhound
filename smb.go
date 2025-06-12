@@ -64,6 +64,12 @@ func fingerprintSMB(dialer proxy.Dialer, ip string, port uint16, timeout time.Du
 	// Analyze security misconfigurations
 	analyzeSecurityMisconfigs(smbInfo)
 
+	// Check for MS17-010 (EternalBlue) vulnerability
+	if vulnerable, err := checkMS17_010(dialer, ip, port, timeout); err == nil && vulnerable {
+		smbInfo.MS17_010 = true
+		// Don't add to SecurityMisconfigs since it's shown prominently in its own section
+	}
+
 	return smbInfo
 }
 
@@ -464,48 +470,58 @@ func enhanceSMBService(dialer proxy.Dialer, service *Service, ip string, timeout
 			service.Version = smbInfo.Dialect
 		}
 
-		// Create a descriptive banner
+		// Create a concise, prioritized banner
 		var bannerParts []string
-		if smbInfo.SMBVersion != "" {
-			bannerParts = append(bannerParts, smbInfo.SMBVersion)
-		}
+
+		// Protocol version (concise)
 		if smbInfo.Dialect != "" {
 			bannerParts = append(bannerParts, smbInfo.Dialect)
+		} else if smbInfo.SMBVersion != "" {
+			bannerParts = append(bannerParts, smbInfo.SMBVersion)
 		}
-		if smbInfo.Signing {
-			bannerParts = append(bannerParts, "Signing: Required")
-		} else {
-			bannerParts = append(bannerParts, "Signing: Not Required")
+
+		// Critical security issues first (most likely to be seen before truncation)
+		if smbInfo.SMBVersion == "SMB1" {
+			bannerParts = append(bannerParts, "SMB1-VULNERABLE")
 		}
+
+		// Anonymous access (concise)
+		if smbInfo.AnonymousAccess || smbInfo.GuestAccess || smbInfo.NullSession {
+			var accessTypes []string
+			if smbInfo.AnonymousAccess {
+				accessTypes = append(accessTypes, "anon")
+			}
+			if smbInfo.GuestAccess {
+				accessTypes = append(accessTypes, "guest")
+			}
+			if smbInfo.NullSession && !smbInfo.AnonymousAccess && !smbInfo.GuestAccess {
+				accessTypes = append(accessTypes, "null")
+			}
+			if len(accessTypes) > 0 {
+				bannerParts = append(bannerParts, fmt.Sprintf("auth:%s", strings.Join(accessTypes, "/")))
+			}
+		}
+
+		// Signing status (concise)
+		if !smbInfo.Signing {
+			bannerParts = append(bannerParts, "no-signing")
+		}
+
+		// MS17-010 status (put at beginning for visibility)
+		if smbInfo.MS17_010 {
+			bannerParts = append([]string{"MS17-010"}, bannerParts...)
+		}
+
+		// Domain info (concise)
 		if smbInfo.Domain != "" {
-			bannerParts = append(bannerParts, fmt.Sprintf("Domain: %s", smbInfo.Domain))
+			bannerParts = append(bannerParts, fmt.Sprintf("domain:%s", smbInfo.Domain))
 		}
 		if smbInfo.Computer != "" {
-			bannerParts = append(bannerParts, fmt.Sprintf("Computer: %s", smbInfo.Computer))
-		}
-
-		// Anonymous access information
-		if smbInfo.AnonymousAccess {
-			bannerParts = append(bannerParts, "Anonymous access: ALLOWED")
-		}
-		if smbInfo.GuestAccess {
-			bannerParts = append(bannerParts, "Guest access: ALLOWED")
-		}
-		if !smbInfo.NullSession {
-			bannerParts = append(bannerParts, "Anonymous access: DENIED")
-		}
-
-		if len(smbInfo.Shares) > 0 {
-			bannerParts = append(bannerParts, fmt.Sprintf("Shares: %s", strings.Join(smbInfo.Shares, ", ")))
-		}
-
-		// Security misconfigurations
-		if len(smbInfo.SecurityMisconfigs) > 0 {
-			bannerParts = append(bannerParts, fmt.Sprintf("Security Issues: %s", strings.Join(smbInfo.SecurityMisconfigs, ", ")))
+			bannerParts = append(bannerParts, fmt.Sprintf("host:%s", smbInfo.Computer))
 		}
 
 		if len(bannerParts) > 0 {
-			service.Banner = strings.Join(bannerParts, " | ")
+			service.Banner = strings.Join(bannerParts, " ")
 		}
 
 		// Set service name based on findings

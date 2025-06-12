@@ -2,15 +2,16 @@ package main
 
 // Service represents a detected service on a host
 type Service struct {
-	Port     uint16   `json:"port"`
-	Protocol string   `json:"protocol"`
-	Name     string   `json:"name,omitempty"`
-	Product  string   `json:"product,omitempty"`
-	Version  string   `json:"version,omitempty"`
-	State    string   `json:"state"`
-	Banner   string   `json:"banner,omitempty"`
-	Title    string   `json:"title,omitempty"`
-	SMB      *SMBInfo `json:"smb,omitempty"`
+	Port     uint16    `json:"port"`
+	Protocol string    `json:"protocol"`
+	Name     string    `json:"name,omitempty"`
+	Product  string    `json:"product,omitempty"`
+	Version  string    `json:"version,omitempty"`
+	State    string    `json:"state"`
+	Banner   string    `json:"banner,omitempty"`
+	Title    string    `json:"title,omitempty"`
+	SMB      *SMBInfo  `json:"smb,omitempty"`
+	LDAP     *LDAPInfo `json:"ldap,omitempty"`
 }
 
 // SMBInfo represents SMB/NTLM specific information
@@ -32,6 +33,28 @@ type SMBInfo struct {
 	AnonymousAccess    bool     `json:"anonymous_access,omitempty"`
 	SupportedDialects  []string `json:"supported_dialects,omitempty"`
 	SecurityMisconfigs []string `json:"security_misconfigs,omitempty"`
+	MS17_010           bool     `json:"ms17_010,omitempty"`
+}
+
+// LDAPInfo represents LDAP specific information
+type LDAPInfo struct {
+	BaseDN               string            `json:"base_dn,omitempty"`
+	Domain               string            `json:"domain,omitempty"`
+	NamingContext        string            `json:"naming_context,omitempty"`
+	ServerName           string            `json:"server_name,omitempty"`
+	ForestName           string            `json:"forest_name,omitempty"`
+	DomainController     string            `json:"domain_controller,omitempty"`
+	SupportedLDAPVersion string            `json:"supported_ldap_version,omitempty"`
+	SupportedSASLMechs   []string          `json:"supported_sasl_mechs,omitempty"`
+	SupportedExtensions  []string          `json:"supported_extensions,omitempty"`
+	SupportedControls    []string          `json:"supported_controls,omitempty"`
+	RootDSE              map[string]string `json:"rootdse,omitempty"`
+	AnonymousBind        bool              `json:"anonymous_bind,omitempty"`
+	AllowsAnonymousRead  bool              `json:"allows_anonymous_read,omitempty"`
+	SecurityMisconfigs   []string          `json:"security_misconfigs,omitempty"`
+	Users                []string          `json:"users,omitempty"`
+	Groups               []string          `json:"groups,omitempty"`
+	Computers            []string          `json:"computers,omitempty"`
 }
 
 // Host represents a scanned host with its services
