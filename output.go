@@ -346,34 +346,6 @@ func printScanComplete(results []Host, outputFile string, startTime time.Time) {
 	fmt.Printf("  └─ Total Services:  %s%d%s services discovered\n", color(ColorCyan), totalServices, color(ColorReset))
 	fmt.Printf("  └─ Output File:     %s%s%s\n", color(ColorYellow), outputFile, color(ColorReset))
 
-	if len(serviceTypes) > 0 {
-		fmt.Println()
-		printInfo("Service Breakdown:")
-
-		// Sort service types by count
-		type serviceCount struct {
-			name  string
-			count int
-		}
-		var services []serviceCount
-		for name, count := range serviceTypes {
-			services = append(services, serviceCount{name, count})
-		}
-		sort.Slice(services, func(i, j int) bool {
-			return services[i].count > services[j].count
-		})
-
-		for i, service := range services {
-			connector := "├─"
-			if i == len(services)-1 {
-				connector = "└─"
-			}
-			portColor := getPortColor(service.name)
-			fmt.Printf("  %s %s%s%s: %s%d%s instances\n",
-				connector, color(portColor), service.name, color(ColorReset), color(ColorCyan), service.count, color(ColorReset))
-		}
-	}
-
 	fmt.Println()
 }
 
