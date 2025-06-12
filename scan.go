@@ -120,5 +120,10 @@ func scanPort(dialer proxy.Dialer, ip string, port uint16, timeout time.Duration
 		enhanceSMBService(dialer, service, ip, timeout)
 	}
 
+	// Perform LDAP fingerprinting for LDAP ports
+	if service.Port == 389 || service.Port == 636 {
+		enhanceLDAPService(dialer, service, ip, timeout)
+	}
+
 	return service
 }

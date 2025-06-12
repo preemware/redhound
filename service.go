@@ -37,6 +37,8 @@ func detectServiceFromBanner(service *Service, banner string) {
 		service.Name = "telnet"
 	case strings.Contains(bannerLower, "mysql"):
 		service.Name = "mysql"
+	case strings.Contains(bannerLower, "ldap"):
+		service.Name = "ldap"
 	case strings.Contains(bannerLower, "microsoft"):
 		service.Product = "Microsoft"
 	case strings.Contains(bannerLower, "220"):
@@ -72,6 +74,8 @@ func detectServiceByPort(port uint16) string {
 		return "imap"
 	case 389:
 		return "ldap"
+	case 636:
+		return "ldaps"
 	case 443:
 		return "https"
 	case 993:

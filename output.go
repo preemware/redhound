@@ -220,6 +220,11 @@ func printHostDiscovery(host Host) {
 			printSMBDetails(service.SMB, isLast)
 		}
 
+		// Display LDAP-specific information
+		if service.LDAP != nil {
+			printLDAPDetails(service.LDAP, isLast)
+		}
+
 		fmt.Println()
 	}
 	fmt.Println()
@@ -252,6 +257,48 @@ func printSMBDetails(smb *SMBInfo, isLast bool) {
 	}
 }
 
+// printLDAPDetails displays detailed LDAP information
+func printLDAPDetails(ldap *LDAPInfo, isLast bool) {
+	prefix := "│  "
+	if isLast {
+		prefix = "   "
+	}
+
+	if ldap.Domain != "" {
+		fmt.Printf("\n%s%s├─ Domain: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.Domain, color(ColorReset))
+	}
+	if ldap.BaseDN != "" {
+		fmt.Printf("\n%s%s├─ Base DN: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.BaseDN, color(ColorReset))
+	}
+	if ldap.ServerName != "" {
+		fmt.Printf("\n%s%s├─ Server: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.ServerName, color(ColorReset))
+	}
+	if ldap.NamingContext != "" {
+		fmt.Printf("\n%s%s├─ Naming Context: %s%s%s", color(ColorGray), prefix, color(ColorCyan), ldap.NamingContext, color(ColorReset))
+	}
+	if ldap.AnonymousBind {
+		fmt.Printf("\n%s%s├─ %sAnonymous Bind: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Users) > 0 && ldap.Users[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Users Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Users), color(ColorReset))
+	} else if len(ldap.Users) > 0 {
+		fmt.Printf("\n%s%s├─ %sUser Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Groups) > 0 && ldap.Groups[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Groups Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Groups), color(ColorReset))
+	} else if len(ldap.Groups) > 0 {
+		fmt.Printf("\n%s%s├─ %sGroup Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.Computers) > 0 && ldap.Computers[0] != "enumeration_successful" {
+		fmt.Printf("\n%s%s├─ Computers Found: %s%d%s", color(ColorGray), prefix, color(ColorYellow), len(ldap.Computers), color(ColorReset))
+	} else if len(ldap.Computers) > 0 {
+		fmt.Printf("\n%s%s├─ %sComputer Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+	if len(ldap.SecurityMisconfigs) > 0 {
+		fmt.Printf("\n%s%s└─ %sSecurity Issues: %s%s", color(ColorGray), prefix, color(ColorBoldRed), strings.Join(ldap.SecurityMisconfigs, ", "), color(ColorReset))
+	}
+}
+
 // Get color for port based on service type
 func getPortColor(serviceName string) string {
 	switch serviceName {
@@ -262,6 +309,8 @@ func getPortColor(serviceName string) string {
 	case "ftp":
 		return ColorBoldYellow
 	case "smb":
+		return ColorBoldPurple
+	case "ldap", "ldaps":
 		return ColorBoldPurple
 	case "dns":
 		return ColorBoldCyan
