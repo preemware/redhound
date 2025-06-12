@@ -479,10 +479,6 @@ func enhanceLDAPService(dialer proxy.Dialer, service *Service, ip string, timeou
 			bannerParts = append(bannerParts, fmt.Sprintf("domain:%s", ldapInfo.Domain))
 		}
 
-		if len(ldapInfo.SecurityMisconfigs) > 0 {
-			bannerParts = append(bannerParts, fmt.Sprintf("issues:%d", len(ldapInfo.SecurityMisconfigs)))
-		}
-
 		if len(bannerParts) > 0 {
 			service.Banner = strings.Join(bannerParts, " ")
 		} else {
