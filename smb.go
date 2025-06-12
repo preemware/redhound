@@ -64,6 +64,12 @@ func fingerprintSMB(dialer proxy.Dialer, ip string, port uint16, timeout time.Du
 	// Analyze security misconfigurations
 	analyzeSecurityMisconfigs(smbInfo)
 
+	// Check for MS17-010 (EternalBlue) vulnerability
+	if vulnerable, err := checkMS17_010(dialer, ip, port, timeout); err == nil && vulnerable {
+		smbInfo.MS17_010 = true
+		// Don't add to SecurityMisconfigs since it's shown prominently in its own section
+	}
+
 	return smbInfo
 }
 
@@ -499,6 +505,11 @@ func enhanceSMBService(dialer proxy.Dialer, service *Service, ip string, timeout
 		// Signing status (concise)
 		if !smbInfo.Signing {
 			bannerParts = append(bannerParts, "no-signing")
+		}
+
+		// MS17-010 status (put at beginning for visibility)
+		if smbInfo.MS17_010 {
+			bannerParts = append([]string{"MS17-010"}, bannerParts...)
 		}
 
 		// Domain info (concise)

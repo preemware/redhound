@@ -33,6 +33,7 @@ type SMBInfo struct {
 	AnonymousAccess    bool     `json:"anonymous_access,omitempty"`
 	SupportedDialects  []string `json:"supported_dialects,omitempty"`
 	SecurityMisconfigs []string `json:"security_misconfigs,omitempty"`
+	MS17_010           bool     `json:"ms17_010,omitempty"`
 }
 
 // LDAPInfo represents LDAP specific information

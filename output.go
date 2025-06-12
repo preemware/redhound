@@ -240,6 +240,12 @@ func printSMBDetails(smb *SMBInfo, isLast bool) {
 		prefix = "   "
 	}
 
+	// MS17-010 (EternalBlue) gets top priority and special formatting
+	if smb.MS17_010 {
+		fmt.Printf("\n%s%s├─ %sMS17-010 (EternalBlue): VULNERABLE%s",
+			color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+
 	if smb.Domain != "" {
 		fmt.Printf("\n%s%s├─ Domain: %s%s%s", color(ColorGray), prefix, color(ColorCyan), smb.Domain, color(ColorReset))
 	}
@@ -255,6 +261,10 @@ func printSMBDetails(smb *SMBInfo, isLast bool) {
 	if smb.NullSession {
 		fmt.Printf("\n%s%s├─ %sNull Session: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
 	}
+	if smb.AnonymousAccess {
+		fmt.Printf("\n%s%s├─ %sAnonymous Access: Allowed%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
+	}
+
 	if len(smb.Shares) > 0 {
 		fmt.Printf("\n%s%s└─ Accessible Shares: %s%s%s", color(ColorGray), prefix, color(ColorYellow), strings.Join(smb.Shares, ", "), color(ColorReset))
 	}
