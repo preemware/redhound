@@ -294,9 +294,6 @@ func printLDAPDetails(ldap *LDAPInfo, isLast bool) {
 	} else if len(ldap.Computers) > 0 {
 		fmt.Printf("\n%s%s├─ %sComputer Enumeration: Possible%s", color(ColorGray), prefix, color(ColorBoldRed), color(ColorReset))
 	}
-	if len(ldap.SecurityMisconfigs) > 0 {
-		fmt.Printf("\n%s%s└─ %sSecurity Issues: %s%s", color(ColorGray), prefix, color(ColorBoldRed), strings.Join(ldap.SecurityMisconfigs, ", "), color(ColorReset))
-	}
 }
 
 // Get color for port based on service type

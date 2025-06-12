@@ -64,6 +64,8 @@ func detectServiceByPort(port uint16) string {
 		return "dns"
 	case 80:
 		return "http"
+	case 88:
+		return "kerberos"
 	case 110:
 		return "pop3"
 	case 135:
