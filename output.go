@@ -83,10 +83,13 @@ func printVerbose(format string, args ...interface{}) {
 // Banner and header functions
 func printBanner() {
 	banner := `
-   ╔═══════════════════════════════════════╗
-   ║           ` + color(ColorBoldCyan) + `REDHOUND v1.0` + color(ColorReset) + `             ║
-   ║    ` + color(ColorGray) + `Network Enumeration Tool` + color(ColorReset) + `          ║
-   ╚═══════════════════════════════════════╝
+    ██████╗ ███████╗██████╗ ██╗  ██╗ ██████╗ ██╗   ██╗███╗   ██╗██████╗ 
+    ██╔══██╗██╔════╝██╔══██╗██║  ██║██╔═══██╗██║   ██║████╗  ██║██╔══██╗
+    ██████╔╝█████╗  ██║  ██║███████║██║   ██║██║   ██║██╔██╗ ██║██║  ██║
+    ██╔══██╗██╔══╝  ██║  ██║██╔══██║██║   ██║██║   ██║██║╚██╗██║██║  ██║
+    ██║  ██║███████╗██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝
+    ╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
+    ` + color(ColorGray) + `Network Enumeration Tool` + color(ColorReset) + `
 `
 	fmt.Print(banner)
 }
