@@ -9,11 +9,13 @@ A minimal concurrent internal network enumerator written in Go with SOCKS4/5 pro
 - **Proxy Support**: Full SOCKS4/5 proxy support for internal network enumeration via pivoting
 - **Service Detection**: Advanced service detection via banner grabbing and port-based identification
 - **HTTP Enumeration**: Extracts HTTP titles, server information, and web application details
+- **LDAP Enumeration**: Comprehensive LDAP enumeration and fingerprinting
 - **SMB Fingerprinting**: Comprehensive SMB/CIFS enumeration including:
   - Domain and computer information extraction
   - Share enumeration and access testing
   - Security misconfiguration detection (null sessions, guest access, etc.)
   - SMB version and dialect detection
+  - MS17-010 vulnerability detection
 - **JSON Output**: Structured JSON output for easy integration with other tools
 - **No External Dependencies**: Pure Go implementation with minimal dependencies
 
@@ -122,7 +124,22 @@ The tool outputs results in JSON format with detailed service information:
           "shares": ["ADMIN$", "C$", "IPC$", "NETLOGON", "SYSVOL"],
           "null_session": false,
           "guest_access": false,
-          "security_misconfigs": []
+          "security_misconfigs": [],
+          "ms17_010": false
+        }
+      },
+      {
+        "port": 389,
+        "protocol": "tcp",
+        "name": "ldap",
+        "state": "open",
+        "ldap": {
+          "naming_contexts": ["DC=example,DC=local"],
+          "domain_name": "example.local",
+          "forest_name": "example.local",
+          "domain_controller": "dc01.example.local",
+          "domain_functionality": "2016",
+          "forest_functionality": "2016"
         }
       }
     ]
@@ -130,23 +147,28 @@ The tool outputs results in JSON format with detailed service information:
 ]
 ```
 
-## SMB Enumeration Features
+## Service Enumeration Features
 
-The tool performs comprehensive SMB enumeration when SMB ports (139, 445) are detected:
-
-### Information Gathered
+### SMB Enumeration
 - **Domain Information**: Domain name, computer name, DNS details
 - **SMB Protocol**: Version, supported dialects, signing requirements
 - **Operating System**: Version detection where possible
 - **Share Enumeration**: Lists available shares
 - **Access Testing**: Tests null sessions, guest access, anonymous access
+- **MS17-010**: Detection of EternalBlue vulnerability
 
-### Security Misconfiguration Detection
-- Null authentication allowed
-- Guest account accessible
-- Anonymous access permitted
-- Share enumeration via SMB protocol
-- Weak or default credentials
+### LDAP Enumeration
+- **Domain Information**: Domain and forest names
+- **Functionality Levels**: Domain and forest functionality levels
+- **Naming Contexts**: Available LDAP naming contexts
+- **Domain Controller**: Primary DC identification
+- **Security Settings**: LDAP security configuration detection
+
+### HTTP Enumeration
+- **Server Information**: Web server type and version
+- **Title Extraction**: Page titles and basic content analysis
+- **Security Headers**: Detection of security-related HTTP headers
+- **Common Paths**: Basic enumeration of common web paths
 
 ## Proxy Usage
 
