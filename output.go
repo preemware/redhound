@@ -110,9 +110,6 @@ func printScanSummary(cidr string, hostCount, portCount int, proxy string, rate 
 
 	fmt.Println()
 	printInfo("Starting scan...")
-	fmt.Printf("  %s┌─────────────────────────────────────────────────────┐%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("  %s│ %-51s │%s\n", color(ColorGray), "Host discoveries will appear below:", color(ColorReset))
-	fmt.Printf("  %s└─────────────────────────────────────────────────────┘%s\n", color(ColorGray), color(ColorReset))
 	fmt.Println()
 }
 
@@ -280,10 +277,6 @@ func getPortColor(serviceName string) string {
 // Final scan results summary
 func printScanComplete(results []Host, outputFile string, startTime time.Time) {
 	duration := time.Since(startTime)
-
-	fmt.Printf("%s┌─────────────────────────────────────────────────────┐%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("%s│                 SCAN COMPLETE                       │%s\n", color(ColorGray), color(ColorReset))
-	fmt.Printf("%s└─────────────────────────────────────────────────────┘%s\n", color(ColorGray), color(ColorReset))
 	fmt.Println()
 
 	// Summary statistics
