@@ -125,5 +125,45 @@ func scanPort(dialer proxy.Dialer, ip string, port uint16, timeout time.Duration
 		enhanceLDAPService(dialer, service, ip, timeout)
 	}
 
+	// Perform SSH fingerprinting for SSH ports
+	if service.Port == 22 || service.Port == 2222 {
+		enhanceSSHService(dialer, service, ip, timeout)
+	}
+
+	// Perform FTP fingerprinting for FTP ports
+	if service.Port == 21 {
+		enhanceFTPService(dialer, service, ip, timeout)
+	}
+
+	// Perform Telnet fingerprinting for Telnet ports
+	if service.Port == 23 {
+		enhanceTelnetService(dialer, service, ip, timeout)
+	}
+
+	// Perform VNC fingerprinting for VNC ports
+	if service.Port >= 5900 && service.Port <= 5906 {
+		enhanceVNCService(dialer, service, ip, timeout)
+	}
+
+	// Perform Redis fingerprinting for Redis ports
+	if service.Port == 6379 || service.Port == 6380 {
+		enhanceRedisService(dialer, service, ip, timeout)
+	}
+
+	// Perform MongoDB fingerprinting for MongoDB ports
+	if service.Port >= 27017 && service.Port <= 27019 {
+		enhanceMongoDBService(dialer, service, ip, timeout)
+	}
+
+	// Perform SNMP fingerprinting for SNMP ports
+	if service.Port == 161 || service.Port == 162 {
+		enhanceSNMPService(dialer, service, ip, timeout)
+	}
+
+	// Perform Docker API fingerprinting for Docker ports
+	if service.Port == 2375 || service.Port == 2376 || service.Port == 4243 {
+		enhanceDockerService(dialer, service, ip, timeout)
+	}
+
 	return service
 }

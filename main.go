@@ -9,14 +9,20 @@
 // Build:   go build -o redhound .
 // Examples:
 //
+//	# Scan a single host
+//	./redhound 192.168.1.100 -o results.json
+//
 //	# Direct scan of a /24
-//	./redhound -cidr 192.168.1.0/24 -o results.json -rate 64
+//	./redhound 192.168.1.0/24 -o results.json -r 64
 //
 //	# Route all traffic through SOCKS4 proxy
-//	./redhound -cidr 10.0.0.0/24 -proxy socks4://127.0.0.1:1080
+//	./redhound 10.0.0.0/24 -p socks4://127.0.0.1:1080
 //
 //	# SOCKS5 proxy (also supported)
-//	./redhound -cidr 10.0.0.0/24 -proxy socks5://127.0.0.1:9050
+//	./redhound 10.0.0.0/24 -p socks5://127.0.0.1:9050
+//
+//	# Custom port range with timeout
+//	./redhound 192.168.1.0/24 -P 1-1000 -t 10s
 //
 // -----------------------------------------------------------------------------
 // Features:
@@ -37,14 +43,25 @@ import (
 )
 
 func main() {
-	cidr := flag.String("cidr", "", "CIDR range to scan, e.g. 192.168.0.0/24")
 	out := flag.String("o", "results.json", "Output JSON file")
+
 	rate := flag.Int("rate", 32, "Maximum concurrent host scans")
+	flag.IntVar(rate, "r", 32, "Maximum concurrent host scans")
+
 	timeout := flag.Duration("timeout", 5*time.Second, "Per‑port connection timeout")
+	flag.DurationVar(timeout, "t", 5*time.Second, "Per‑port connection timeout")
+
 	proxy := flag.String("proxy", "", "Proxy URL (socks4|socks5), e.g. socks4://127.0.0.1:1080")
+	flag.StringVar(proxy, "p", "", "Proxy URL (socks4|socks5), e.g. socks4://127.0.0.1:1080")
+
 	portRange := flag.String("ports", "", "Port range to scan (default: common ports), e.g. 1-1000 or 80,443,8080")
+	flag.StringVar(portRange, "P", "", "Port range to scan (default: common ports), e.g. 1-1000 or 80,443,8080")
+
 	noColor := flag.Bool("no-color", false, "Disable colored output")
+	flag.BoolVar(noColor, "n", false, "Disable colored output")
+
 	verbose := flag.Bool("v", false, "Enable verbose output")
+
 	flag.Parse()
 
 	// Initialize output settings
@@ -53,11 +70,18 @@ func main() {
 	// Print banner
 	printBanner()
 
-	if *cidr == "" {
-		printError("you must specify -cidr")
+	// Get target from positional arguments
+	args := flag.Args()
+	if len(args) != 1 {
+		printError("you must specify exactly one target (IP address or CIDR range)")
+		printError("Usage: %s [options] <target>", os.Args[0])
+		printError("Examples:")
+		printError("  %s 192.168.1.100", os.Args[0])
+		printError("  %s 192.168.1.0/24", os.Args[0])
 		flag.Usage()
 		os.Exit(1)
 	}
+	target := args[0]
 
 	// Parse ports to scan
 	ports := CommonPorts
@@ -82,9 +106,9 @@ func main() {
 		}
 	}
 
-	ips, err := cidrHosts(*cidr)
+	ips, err := parseTarget(target)
 	if err != nil {
-		printError("Failed to parse CIDR: %v", err)
+		printError("Failed to parse target: %v", err)
 		os.Exit(1)
 	}
 
@@ -92,7 +116,7 @@ func main() {
 	startTime := time.Now()
 
 	// Print scan summary
-	printScanSummary(*cidr, len(ips), len(ports), *proxy, *rate, *timeout)
+	printScanSummary(target, len(ips), len(ports), *proxy, *rate, *timeout)
 
 	sem := make(chan struct{}, *rate)
 	var wg sync.WaitGroup

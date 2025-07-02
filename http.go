@@ -8,7 +8,16 @@ import (
 
 // isHTTPPort checks if a port is commonly used for HTTP
 func isHTTPPort(port uint16) bool {
-	httpPorts := []uint16{80, 8000, 8008, 8080, 8081, 8090, 8181, 8888, 9000, 9090}
+	httpPorts := []uint16{
+		// Standard HTTP ports
+		80, 443,
+		// Common alternative HTTP ports
+		280, 591, 593, 631, 808, 832, 1010, 1099, 2301, 2381, 2809, 3000, 3001, 3128, 3333, 4243, 4567, 4711, 4712, 4993, 5000, 5001, 5104, 5108, 5800, 6543, 7000, 7001, 7002, 7070, 7396, 7474,
+		// Extended HTTP port range
+		8000, 8001, 8005, 8006, 8008, 8009, 8014, 8042, 8069, 8080, 8081, 8083, 8088, 8090, 8091, 8118, 8123, 8172, 8181, 8222, 8243, 8280, 8281, 8333, 8443, 8500, 8834, 8880, 8888, 8983, 9000, 9043, 9060, 9080, 9090, 9091, 9443, 9800, 9981, 9999, 10001,
+		// Additional web service ports
+		11371, 34573, 55555,
+	}
 	for _, p := range httpPorts {
 		if port == p {
 			return true
