@@ -51,6 +51,25 @@ func parsePorts(portStr string) ([]uint16, error) {
 	return ports, nil
 }
 
+// parseTarget parses a target specification which can be either:
+// - A single IP address (e.g., "192.168.1.1")
+// - A CIDR range (e.g., "192.168.0.0/24")
+func parseTarget(target string) ([]string, error) {
+	// Check if it's a CIDR range (contains '/')
+	if strings.Contains(target, "/") {
+		return cidrHosts(target)
+	}
+
+	// It's a single IP address - validate it
+	ip := net.ParseIP(target)
+	if ip == nil {
+		return nil, fmt.Errorf("invalid IP address: %s", target)
+	}
+
+	// Return single IP as a slice
+	return []string{target}, nil
+}
+
 // cidrHosts expands an IPv4 CIDR into individual host IP strings.
 func cidrHosts(cidr string) ([]string, error) {
 	_, ipnet, err := net.ParseCIDR(cidr)

@@ -4,7 +4,7 @@ A minimal concurrent internal network enumerator written in Go with SOCKS4/5 pro
 
 ## Features
 
-- **CIDR Expansion**: Automatically expands CIDR ranges into individual hosts for scanning
+- **Flexible Targeting**: Supports both single IP addresses and CIDR ranges for scanning
 - **Concurrent Scanning**: Rate-limited concurrent per-host scans for optimal performance
 - **Proxy Support**: Full SOCKS4/5 proxy support for internal network enumeration via pivoting
 - **Service Detection**: Advanced service detection via banner grabbing and port-based identification
@@ -36,55 +36,52 @@ go build .
 ### Basic Examples
 
 ```bash
+# Scan a single host
+./redhound 192.168.1.100 -o results.json
+
 # Direct scan of a /24 network
-./redhound -cidr 192.168.1.0/24 -o results.json -rate 64
+./redhound 192.168.1.0/24 -o results.json -r 64
 
 # Route all traffic through SOCKS4 proxy
-./redhound -cidr 10.0.0.0/24 -proxy socks4://127.0.0.1:1080
+./redhound 10.0.0.0/24 -p socks4://127.0.0.1:1080
 
 # SOCKS5 proxy scan (also supported)
-./redhound -cidr 10.0.0.0/24 -proxy socks5://127.0.0.1:9050
+./redhound 10.0.0.0/24 -p socks5://127.0.0.1:9050
 
 # Custom port range scan
-./redhound -cidr 192.168.1.0/24 -ports 1-1000 -o detailed_scan.json
+./redhound 192.168.1.0/24 -P 1-1000 -o detailed_scan.json
 
 # Verbose output with custom settings
-./redhound -cidr 10.0.0.0/16 -rate 10 -timeout 10s -v -no-color
+./redhound 10.0.0.0/16 -r 10 -t 10s -v -n
 ```
 
 ### Command Line Options
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `-cidr` | CIDR range to scan (required) | - |
-| `-o` | Output JSON file | `results.json` |
-| `-rate` | Maximum concurrent host scans | `32` |
-| `-timeout` | Per-port connection timeout | `5s` |
-| `-proxy` | Proxy URL (socks4\|socks5) | - |
-| `-ports` | Port range to scan | Common ports |
-| `-no-color` | Disable colored output | `false` |
-| `-v` | Enable verbose output | `false` |
+**Usage:** `./redhound [options] <target>`
+
+| Flag | Short | Description | Default |
+|------|-------|-------------|---------|
+| `<target>` | | Target to scan: single IP or CIDR range (required positional argument) | - |
+| `-o` | | Output JSON file | `results.json` |
+| `-rate` | `-r` | Maximum concurrent host scans | `32` |
+| `-timeout` | `-t` | Per-port connection timeout | `5s` |
+| `-proxy` | `-p` | Proxy URL (socks4\|socks5) | - |
+| `-ports` | `-P` | Port range to scan | Common ports |
+| `-no-color` | `-n` | Disable colored output | `false` |
+| `-v` | | Enable verbose output | `false` |
 
 ### Port Specification
 
 You can specify ports in several formats:
-- **Range**: `1-1000` (scan ports 1 through 1000)
-- **List**: `80,443,8080,8443` (scan specific ports)
+- **Range**: `-P 1-1000` (scan ports 1 through 1000)
+- **List**: `-P 80,443,8080,8443` (scan specific ports)
 - **Default**: Leave empty to scan common ports (see below)
 
-## Default Port List
+### Target Specification
 
-The tool scans the following common ports by default:
-```
-21 (FTP), 22 (SSH), 23 (Telnet), 25 (SMTP), 53 (DNS), 80 (HTTP), 88 (Kerberos),
-110 (POP3), 111 (RPC), 135 (RPC), 139 (NetBIOS), 143 (IMAP), 389 (LDAP),
-443 (HTTPS), 445 (SMB), 464 (Kerberos), 636 (LDAPS), 993 (IMAPS), 995 (POP3S),
-1433 (SQL Server), 1434 (SQL Browser), 1521 (Oracle), 1723 (PPTP), 2049 (NFS),
-3050 (Firebird), 3268 (AD Global Catalog), 3306 (MySQL), 3389 (RDP),
-5432 (PostgreSQL), 5900 (VNC), 5984 (CouchDB), 5985 (WinRM HTTP), 5986 (WinRM HTTPS),
-6379 (Redis), 7001 (Cassandra), 8000-8090 (Various HTTP), 8181, 8443, 8888,
-9000, 9043, 9090, 9200 (Elasticsearch), 9443, 27017 (MongoDB)
-```
+You can specify targets as positional arguments in two formats:
+- **Single IP**: `./redhound 192.168.1.100` (scan a single host)
+- **CIDR Range**: `./redhound 192.168.1.0/24` (scan entire subnet)
 
 ## Output Format
 
@@ -165,10 +162,34 @@ The tool outputs results in JSON format with detailed service information:
 - **Security Settings**: LDAP security configuration detection
 
 ### HTTP Enumeration
-- **Server Information**: Web server type and version
+- **Server Information**: Web server type and version (Apache, nginx, IIS, Tomcat, etc.)
 - **Title Extraction**: Page titles and basic content analysis
-- **Security Headers**: Detection of security-related HTTP headers
-- **Common Paths**: Basic enumeration of common web paths
+- **Technology Detection**: PHP, ASP.NET, and other platform identification
+- **Extended Port Coverage**: Supports 80+ HTTP-related ports
+
+### SSH Enumeration
+- **Version Detection**: SSH protocol version (1.x/2.x)
+- **Implementation**: OpenSSH, Dropbear, and other SSH server identification
+- **Banner Analysis**: Detailed SSH banner parsing
+
+### FTP Enumeration
+- **Server Detection**: vsftpd, ProFTPD, Pure-FTPd, FileZilla, Microsoft FTP
+- **Anonymous Access**: Tests for anonymous login capabilities
+- **Banner Analysis**: Comprehensive FTP banner examination
+
+### Database Enumeration
+- **Redis**: Version detection and service verification
+- **MongoDB**: Connection testing and basic fingerprinting
+- **Multi-Database Support**: Enhanced detection for MySQL, PostgreSQL, Oracle, MSSQL, and more
+
+### Remote Access Services
+- **VNC**: Version detection and implementation identification (RealVNC, TightVNC, UltraVNC)
+- **Telnet**: Protocol negotiation detection and banner capture
+- **Docker API**: Version detection and API endpoint identification
+
+### Network Services
+- **SNMP**: Service detection and basic enumeration
+- **Enhanced Coverage**: Support for 200+ additional service types including industrial protocols, IoT devices, and cloud services
 
 ## Proxy Usage
 
@@ -178,8 +199,8 @@ When using proxy mode, the tool automatically adjusts settings for optimal perfo
 - **Connection Routing**: All traffic (including DNS lookups where applicable) routes through the specified proxy
 
 ### Supported Proxy Types
-- **SOCKS4**: `socks4://127.0.0.1:1080`
-- **SOCKS5**: `socks5://127.0.0.1:9050`
+- **SOCKS4**: `-p socks4://127.0.0.1:1080`
+- **SOCKS5**: `-p socks5://127.0.0.1:9050`
 
 ## Performance Considerations
 
