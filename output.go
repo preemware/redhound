@@ -62,6 +62,7 @@ func printInfo(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, color(ColorBoldBlue)+"[*]"+color(ColorReset)+" "+format+"\n", args...)
 }
 
+
 func printSuccess(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, color(ColorBoldGreen)+"[+]"+color(ColorReset)+" "+format+"\n", args...)
 }
@@ -360,11 +361,3 @@ func printScanComplete(results []Host, outputFile string, startTime time.Time) {
 }
 
 // Progress indicator for verbose mode
-func printProgress(current, total int) {
-	if total == 0 {
-		return
-	}
-
-	percent := float64(current) / float64(total) * 100
-	printVerbose("Progress: %d/%d hosts scanned (%.1f%%)", current, total, percent)
-}
