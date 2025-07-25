@@ -33,3 +33,12 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# CLI
+CLAUDE.md
+.claude
+
+# Binaries
+redhound_darwin_amd64
+redhound_linux_amd64
+redhound_windows_amd64.exe
